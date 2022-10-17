@@ -1,0 +1,41 @@
+-- QUESTION ONE
+CREATE TABLE child_registrations(
+	PRIMARY KEY unique_id int NOT NULL,
+	birthdate timestamp,
+	gender varChar(255)
+)
+
+CREATE TABLE child_vaccinations(
+	facility_name varChar(255),
+	event_date timestamp,
+	PRIMARY KEY unique_id int NOT NULL,
+	vaccine_type ENUM ('bcg','hepb','mr_1','opv_0','opv_1','opv_2','opv_3','pcv_1','pcv_2','pcv_3','penta_1','penta_2','penta_3','rota_1','rota_2','yellow_fever'),
+	
+)
+-- First Method: creating a child extended table that inherits properties from the child_vaccination table on child_registrations table.
+CREATE TABLE child_extended(
+	unique_id int NOT_NULL, 
+	birthdate timestamp,
+	gender varChar,
+	PRIMARY KEY(unique_id),
+	FOREIGN KEY (unique_id) REFERENCES child_vaccinations(unique_id),	
+	FOREIGN KEY(facility_name) REFERENCES child_vaccinations(facility_name),
+	FOREIGN KEY(event_date) REFERENCES child_vaccinations(event_date)
+	FOREIGN KEY(vaccine_type) REFERENCES child_vaccinations(vaccine_type)
+	
+)
+-- Second Method: Creating an inner join between the two tables.
+SELECT child_vaccinations.event_date, child_vaccinations.vaccine_type, child_vaccinations.unique_id,child_vaccinations.unique_id, child_registrations.birthdate, child_registrations.gender, child_registrations.unique_id
+FROM child_registrations,
+INNER JOIN child_registrations.unique_id=child_vaccinations.unique_id
+
+-- QUESTION TWO
+
+-- unnesting the type_school_column
+SELECT * FROM (
+select value as type_school_class SELECT school_data
+CROSS APPLY STRING_SPLIT(replace(replace(type_school_class,'[',''),']',''),',') 
+)
+-- replacing values of columns
+UPDATE table school_data 
+SET school_data.type_school_class AND school_data.urban_rural_school  = (SELECT school_data_labels.label FROM table school_data_labels WHERE school_data_labels.labels = school_data.type_school_class AND school_data.urban_rural_school);
